@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ysuuu register!</title>
+    <link rel="stylesheet" type="text/css" href="./support/main.css">
+    <link rel="stylesheet" type="text/css" href="./../../support/pack/arthematicsPack/Z_opt.css">
+    <script src="./support/support.js"></script>
+    <script src="./../adaptor/beadaptor.js"></script>
+    <script src="./../../support/pack/arthematicsPack/Z_opt.js"></script>
+    <script src="./../../support/libs/p5.min.js"></script>
+
+    <script>
+        window.onload = function () {
+            var emailIsSend = false;
+            //点击发送验证码按钮
+            document.querySelector("#btn_sendEcode").onclick = () => {
+                let emailAddress = document.querySelector("#ipt_email").value;
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", "http://121.40.159.180:4998/api/users/sendEmail/" + emailAddress + "/");
+                xhr.send();
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            let result = JSON.parse(xhr.response);
+                            if (result.ret == 0) {//发送成功
+                                document.querySelector("#inf_ecodeSended").innerHTML = "已发送!";
+                                showDom(document.querySelector("#inf_ecodeSended"), 20);
+                                emailIsSend = true;
+                                showDom(document.querySelector("#ipt_ecode"));
+                            } else {
+                                document.querySelector("#inf_ecodeSended").innerHTML = "发送失败";
+                                showDom(document.querySelector("#inf_ecodeSended"), 20);
+                            }
+                        } else {
+                            alert("服务器似乎挂了（；´д｀）ゞ\n过会再试试?")
+                        }
+                    }
+                }
+            }
+            //点击注册按钮
+            document.querySelector("#btn_submit").onclick = () => {
+                //隐藏提示元素
+                hideDom(document.querySelector("#inf_ecodeSended"));
+                hideDom(document.querySelector("#inf_hasSameName"));
+                hideDom(document.querySelector("#inf_ecodeWrong"));
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://121.40.159.180:4998/api/users/register", true);
+                xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                let sendData = {
+                    username: document.querySelector("#ipt_username").value,
+                    password: document.querySelector("#ipt_password_1").value,
+                    ecode: document.querySelector("#ipt_ecode").value,
+                    email: document.querySelector("#ipt_email").value
+                };
+                xhr.send(JSON.stringify(sendData));
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            let data = JSON.parse(xhr.response)
+                            let result = data.ret;
+                            // # 返回值列表:
+                            // # 成功
+                            // # ret:    0
+                            // # jwt:    jwt
+                            // # 用户已经存在
+                            // # ret:    1
+                            // # 验证码错误
+                            // # ret:    2
+                            // # 未知错误
+                            // # ret:    9
+                            if (result == 1) {
+                                showDom(document.querySelector("#inf_hasSameName"), 20);
+                            } else if (result == 2) {
+                                showDom(document.querySelector("#inf_ecodeWrong"), 20);
+                            } else if (result == 0) {
+                                //添加cookie
+                                let cdate = new Date();
+                                cdate.setDate(cdate.getDate() + 14);
+                                let expireDate = cdate.toGMTString();
+                                document.cookie = `jwt=${data.jwt};expires=${expireDate};path=/`;
+                                //如果有purl则返回页面
+                                if (getCookie("purl").ret == 0) {
+                                    jumpPage(getCookie("purl").value);
+                                } else {
+                                    jumpPage("./../index/index.html");
+                                }
+                            } else {
+                                alert("网站崩了2333");
+                            }
+                        } else {
+                            alert("服务器似乎挂了（；´д｀）ゞ\n过会再试试?")
+                        }
+                    }
+                }
+            }
+            //判断两个输入框的密码是否相同
+            function pswdIsSame() {
+                let pswd1 = document.querySelector("#ipt_password_1").value;
+                let pswd2 = document.querySelector("#ipt_password_2").value;
+                if (pswd1 == pswd2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            //输入密码时直接判断两遍密码是否相同，一致时显示发送验证码
+            document.querySelector("#ipt_password_2").onkeyup = () => {
+                if (pswdIsSame()) {
+                    hideDom(document.querySelector("#inf_passwordDifference"));
+                    showDom(document.querySelector("#ipt_email"));
+                    setTimeout(() => {
+                        showDom(document.querySelector("#btn_sendEcode"));
+                    }, 600);
+                } else {
+                    showDom(document.querySelector("#inf_passwordDifference"), 20);
+                }
+            }
+            //根据填写状况生成界面
+            document.querySelector("body").onkeyup = () => {
+                //隐藏提示元素
+                hideDom(document.querySelector("#inf_ecodeSended"));
+                hideDom(document.querySelector("#inf_hasSameName"));
+                hideDom(document.querySelector("#inf_ecodeWrong"));
+                if (document.querySelector("#ipt_username").value != "" && document.querySelector("#ipt_password_1").value != "") {
+                    showDom(document.querySelector("#ipt_password_2"));
+                }
+                {//每个空都填了才能点击注册按钮
+                    let finished = true;
+                    for (let cinput of document.querySelectorAll(".requiredInput")) {
+                        let cvalue = cinput.value;
+                        if (cvalue == "") {
+                            finished = false;
+                            break;
+                        }
+                    }
+                    if (!pswdIsSame()) {
+                        finished = false;
+                    }
+                    if (finished) {
+                        showDom(document.querySelector("#btn_submit"));
+                    } else {
+                        hideDom(document.querySelector("#btn_submit"));
+                    }
+                }
+            }
+            //点击链接跳转到登录
+            document.querySelector("#jmp_login").onclick = () => {
+                jumpPage("./login.html");
+            }
+            //开屏退出loading界面
+            fadeOutLoadingPan();
+        }
+    </script>
+    <script>
+        let py = 0;
+        let px = 0;
+        let i = 25;
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            fill(0);
+        }
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+        function draw() {
+            translate(width / 2, height / 2);
+            background(0);
+            let T = frameCount / 1110;
+            i = 0;
+            stroke(255);
+            strokeWeight(1);
+            for (let theta = -100; theta < 100; theta += 4) {
+                let x = sin(theta + T) * 410;
+                let y = cos(theta + T) * 410;
+                stroke(map(theta, -100, 100, 0, 255), map(theta, -100, 100, 255, 0), 222)
+                if (theta != -100) {
+                    line(x, y, px, py);
+                }
+                px = x; py = y;
+            }
+        }
+    </script>
+    <style>
+        #ipt_email {
+            width: calc(100% - 50px);
+        }
+
+        #btn_sendEcode {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgb(17, 255, 255);
+            border-radius: 50%;
+            line-height: 35px;
+            color: white;
+            float: right;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+        }
+
+        #btn_sendEcode:hover {
+            background-color: rgb(17, 255, 255);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ctn_mainContainer">
+        <h1 class="dis_title yishu">注册</h1>
+        <div class="ctn_inputBox">
+            <input type="text" id="ipt_username" class="requiredInput" placeholder="用户名:">
+            <p id="inf_hasSameName" class="initialHide info_p">该用户名已存在2333</p>
+        </div>
+        <div class="ctn_inputBox">
+            <input type="password" id="ipt_password_1" class="requiredInput" placeholder="密码:">
+        </div>
+        <div class="ctn_inputBox">
+            <input type="password" id="ipt_password_2" class="initialHide requiredInput" placeholder="确认一遍密码:">
+            <p id="inf_passwordDifference" class="initialHide info_p">两遍输入的密码不一致2333</p>
+        </div>
+        <div class="ctn_inputBox">
+            <div class="initialHide normal_button" id="btn_sendEcode">S</div>
+            <input type="email" id="ipt_email" class="initialHide requiredInput" placeholder="邮箱:">
+            <p id="inf_ecodeSended" class="initialHide info_p">验证码已发送</p>
+        </div>
+        <p class="initialHide dis_infoShow">邮箱将用于后续点赞,评论的提醒</p>
+        <div class="ctn_inputBox">
+            <input type="text" name="ipt_ecode" id="ipt_ecode" class="initialHide requiredInput" placeholder="验证码:">
+            <p id="inf_ecodeWrong" class="initialHide info_p">验证码错误</p>
+        </div>
+        <div class="ctn_inputBox">
+            <div type="submit" id="btn_submit" class="initialHide submit">注册</div>
+        </div>
+        <p class="dis_textLightWhite">已有账户? <span class="jmp_p" id="jmp_login">登录</span></p>
+    </div>
+    <div class="loadingLayer">
+        <div class="loadingCenter">
+            <h1>异术</h1>
+            <p>LOADING...</p>
+        </div>
+    </div>
+</body>
+
+</html>

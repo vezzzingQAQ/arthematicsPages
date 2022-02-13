@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异术!</title>
+    <link rel="stylesheet" type="text/css" href="./../../support/pack/csspack/style.css">
+    <link rel="stylesheet" type="text/css" href="./../../support/pack/arthematicsPack/Z_opt.css">
+    <script src="./../../support/pack/arthematicsPack/Z_opt.js"></script>
+    <script src="./../../support/libs/p5.min.js"></script>
+    <script src="./../../support/pack/publicVariable.js"></script>
+    <script src="./../../support/pack/hudObj.js"></script>
+    <script src="./../../support/pack/mathObj.js"></script>
+    <script src="./../../support/pack/roomObj.js"></script>
+    <script src="./../../support/pack/mbtAdp.js"></script>
+    <script src="./../../support/pack/vltd.js"></script>
+    <script src="./../../support/pack/vltd_func.js"></script>
+
+    <script>
+
+        var objects = initStruc({ x: 0, z: 0, thetarw: -3.06, thetaeh: 0 }, { background: [0] });
+
+        window.onload = function () {
+            fadeOutLoadingPan();
+            initPage();
+        }
+
+        function initPage() {
+            let sizeX = 2400;
+            let sizeZ = 2400;
+
+            let pos0x = -800;
+            let pos0z = 0;
+            // initBasicFunctionGround(sizeX, 10, sizeZ, 10, 0, 0, (t, obj) => {
+            //     let zv = Math.sin(obj.paraList.x + t / 10);
+            //     obj.size.x = (zv + 1) * 10 + sizeX / 10 - 20;
+            //     obj.size.z = (zv + 1) * 10 + sizeZ / 10 - 20;
+            // }, [220, 0, 220], 0.5, [0], 10, 10);
+
+            {//展览馆
+                for (let x = -250; x <= 250; x += 100) {
+                    for (let y = -250; y <= 250; y += 100) {
+                        initCube(
+                            "cube1",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 100,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 255, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = fy / 2 + 25;
+                                self.size.y = fy + 50;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                        initCube(
+                            "cube2",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 600,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 199, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = 600 - fy;
+                                self.size.y = -fy / 2;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                    }
+                }
+                initBasicRotatingDisplayBox(
+                    "displayBox1",
+                    { x: pos0x, z: pos0z, y: 220 },
+                    new GlTdFunction_obj(
+                        {
+                            "acobj": { author: "vezzzing", date: "2022.1.7" },
+                            "fx": -2, "tx": 2, "sx": 10,
+                            "fy": -2, "ty": 2, "sy": 10,
+                            "equation": `sin(x*y/10+T)`,
+                            "display":
+                                `
+                            strokeWeight(1);
+                            stroke(map(x,-2,2,0,255),map(y,-2,2,0,255),map(z,-1,1,0,255));
+                            box(35,map(z,-1,1,-55,55),35);
+                            `
+                        }
+                    ),
+                    { x: 0, z: 0, y: 0 },
+                    { x: 150, z: 150, y: 150 },
+                );
+                initTraggerPoint(
+                    51, "enterMuseum",
+                    { x: pos0x, z: pos0z, y: 0 },
+                    () => {
+                        fadeInJumpPan("museum",
+                            [{
+                                url: "./../museum/index.html",
+                                keyCode: 13
+                            }]);
+                    },
+                    () => {
+                        fadeOutJumpPan("museum");
+                    }, 500
+                )
+            }
+
+            pos0x = 800;
+            pos0z = 0;
+
+            {//体验馆
+                for (let x = -250; x <= 250; x += 100) {
+                    for (let y = -250; y <= 250; y += 100) {
+                        initCube(
+                            "cube1",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 100,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [255, 111, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = fy / 2 + 25;
+                                self.size.y = fy + 50;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                        initCube(
+                            "cube2",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 600,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 199, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = 600 - fy;
+                                self.size.y = -fy / 2;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                        initCube(
+                            "cube2",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 600,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 199, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = 600 - fy;
+                                self.size.y = -fy / 2;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                    }
+                }
+                initRotatingDisplayScreenBox(
+                    "displayscreen9",
+                    { x: pos0x, z: pos0z, y: 300 },
+                    new TdFunctionFlat(
+                        { author: "vezzzing", date: "2022.1.12" },
+                        -2, 2, 15,
+                        -2, 2, 15,
+                        `sin(x*x+y*y-T)`,
+                        `
+                        noStroke();
+                        fill(sin(z)*120+120,sin(z*2)*120+120,220);
+                        rect(px,py,map(z,-1,1,0,15));`
+                    )
+                );
+
+                initTraggerPoint(
+                    51, "enterDisplayRoom",
+                    { x: pos0x, z: pos0z, y: 0 },
+                    () => {
+                        fadeInJumpPan("displayroom",
+                            [{
+                                url: "./../editor/editor_tdfunctionflat.html",
+                                keyCode: 13
+                            }]);
+                    },
+                    () => {
+                        fadeOutJumpPan("displayroom");
+                    }, 500
+                )
+            }
+
+            pos0x = 0;
+            pos0z = -800;
+
+            {//学术
+                for (let x = -250; x <= 250; x += 100) {
+                    for (let y = -250; y <= 250; y += 100) {
+                        initCube(
+                            "cube1",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 100,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 255, 111],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = fy / 2 + 25;
+                                self.size.y = fy + 50;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                        initCube(
+                            "cube2",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 600,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 199, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = 600 - fy;
+                                self.size.y = -fy / 2;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                    }
+                }
+                for (let i = 0; i < 100; i++) {
+                    initCube(
+                        "cube2",
+                        {
+                            x: pos0x,
+                            z: pos0z,
+                            y: 300,
+                        },
+                        {
+                            x: 150 - i,
+                            z: 150 - i,
+                            y: 150 - i,
+                        },
+                        null,
+                        [255, map(i, 1, 100, 0, 255), map(i, 1, 100, 255, 1)],
+                        0.4,
+                        null,
+                        {
+                            x: PI / 8,
+                            z: PI / 8,
+                            y: 0,
+                        },
+                        (t, self) => {
+                            self.rotation.y += 0.01 + i / 30000;
+                            self.rotation.x += 0.01 + i / 30000;
+                            self.rotation.z += 0.01 + i / 30000;
+                        },
+                    );
+                }
+                initTraggerPoint(
+                    51, "enterAcademic",
+                    { x: pos0x, z: pos0z, y: 0 },
+                    () => {
+                        fadeInJumpPan("academic",
+                            [{
+                                url: "./../editor/editor_tdfunctionflat.html",
+                                keyCode: 13
+                            }]);
+                    },
+                    () => {
+                        fadeOutJumpPan("academic");
+                    }, 500
+                )
+            }
+
+            pos0x = 0;
+            pos0z = 800;
+
+            {//编辑器
+                for (let x = -250; x <= 250; x += 100) {
+                    for (let y = -250; y <= 250; y += 100) {
+                        initCube(
+                            "cube1",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 100,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [244, 255, 111],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = fy / 2 + 25;
+                                self.size.y = fy + 50;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                        initCube(
+                            "cube2",
+                            {
+                                x: pos0x + x,
+                                z: pos0z + y,
+                                y: 600,
+                            },
+                            {
+                                x: 100,
+                                z: 100,
+                                y: 80,
+                            },
+                            null,
+                            [111, 199, 255],
+                            1,
+                            [0],
+                            {
+                                x: 0,
+                                z: 0,
+                                y: 0,
+                            },
+                            (t, self) => {
+                                let fy = sin(self.paraList.x * self.paraList.x + self.paraList.y + t / 10) * 10;
+                                self.position.y = 600 - fy;
+                                self.size.y = -fy / 2;
+                            },
+                            { x: x / 50, y: y / 50 }
+                        );
+                    }
+                }
+                initCube(
+                    "cube2",
+                    {
+                        x: pos0x,
+                        z: pos0z,
+                        y: 300,
+                    },
+                    {
+                        x: 150,
+                        z: 150,
+                        y: 150,
+                    },
+                    null,
+                    [111, 199, 255],
+                    1,
+                    null,
+                    {
+                        x: 0,
+                        z: 0,
+                        y: 0,
+                    },
+                );
+                initFacingDisplayPlane(
+                    "zzz2",
+                    { x: pos0x, y: 320, z: pos0z },
+                    { x: 0, y: 0, z: 0 },
+                    new NormalPaint(
+                        { author: "vezzzing" },
+                        function (a) {
+                            return `
+            canvasList[${a}].clear();
+            canvasList[${a}].noStroke();
+            canvasList[${a}].push();
+            canvasList[${a}].scale(1,-1);
+            canvasList[${a}].fill(255);
+            canvasList[${a}].textSize(5);
+            canvasList[${a}].text(\`
+            sin(x*x+sin(y)*y+T);
+            stroke(0);
+            fill(
+                map(x,-5,5,0,255),
+                map(z,-1,1,255,0),
+                map(z,-1,1,0,255)
+            );
+            rect(px,py,
+                map(z,-1,1,0,15),map(z,-1,1,15,0)
+            );
+            \`,0,-110);    
+            canvasList[${a}].pop();
+            `
+                        }
+                    ),
+                    150, 150
+                );
+
+                initTraggerPoint(
+                    51, "enterEditor",
+                    { x: pos0x, z: pos0z, y: 0 },
+                    () => {
+                        fadeInJumpPan("editor",
+                            [{
+                                url: "./../editor/editor_tdfunctionflat.html",
+                                keyCode: 13
+                            }]);
+                    },
+                    () => {
+                        fadeOutJumpPan("editor");
+                    }, 500
+                )
+            }
+
+            let cuber = 500;
+            for (let i = 0; i < 40; i++) {
+                initCube(
+                    "cube2",
+                    {
+                        x: cuber,
+                        z: -cuber,
+                        y: i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: cuber,
+                        z: cuber,
+                        y: i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: -cuber,
+                        z: cuber,
+                        y: i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: -cuber,
+                        z: -cuber,
+                        y: i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+            }
+
+            for (let i = 0; i < 40; i++) {
+                initCube(
+                    "cube2",
+                    {
+                        x: cuber,
+                        z: -cuber,
+                        y: -i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: cuber,
+                        z: cuber,
+                        y: -i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: -cuber,
+                        z: cuber,
+                        y: -i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+                initCube(
+                    "cube2",
+                    {
+                        x: -cuber,
+                        z: -cuber,
+                        y: -i * 120,
+                    },
+                    {
+                        x: 100 - i * 2.5,
+                        z: 100 - i * 2.5,
+                        y: 100,
+                    },
+                    null,
+                    [255, 110, 110],
+                    1,
+                    [0],
+                    {
+                        x: 0,
+                        y: i / 10,
+                        z: 0
+                    },
+                    (t, self) => {
+                        self.rotation.y = i / 10 + t / 100;
+                    }
+                );
+            }
+
+            initSphere(
+                "sun",
+                {
+                    x: 0,
+                    z: 0,
+                    y: 4000
+                },
+                {
+                    r: 400
+                },
+                null, 0, [250, 0, 255]
+            )
+
+            initSphere(
+                "sun",
+                {
+                    x: 0,
+                    z: 0,
+                    y: -4000
+                },
+                {
+                    r: 400
+                },
+                null, 0, [0, 255, 255]
+            )
+
+            for (let i = 0; i < 5; i++) {
+                initLoop(
+                    "loop4",
+                    { x: 0, y: 2520, z: 0 },
+                    { x: 600-i*100, y: 2100-i*100, z: 0, r: 2600 },
+                    16,
+                    [250, 222, 250], 3, null,
+                    { x: 0, y: 0, z: 0 },
+                    (t, self) => {
+                        self.rotation.y += 0.003;
+                    }
+                );
+            }
+            for (let i = 0; i < 5; i++) {
+                initLoop(
+                    "loop4",
+                    { x: 0, y: -2520, z: 0 },
+                    { x: 600-i*100, y: 2100-i*100, z: 0, r: 2600 },
+                    16,
+                    [250, 222, 250], 3, null,
+                    { x: 0, y: 0, z: 0 },
+                    (t, self) => {
+                        self.rotation.y += 0.003;
+                    }
+                );
+            }
+
+            
+
+            initCanvas();
+
+        }
+    </script>
+</head>
+
+<body>
+    <div class="hudLayer"></div>
+    <div class="mbtLayer">
+        <div class="mbt_left mbt_button">←</div>
+        <div class="mbt_right mbt_button">→</div>
+        <div class="mbt_top mbt_button">↑</div>
+        <div class="mbt_bottom mbt_button">↓</div>
+    </div>
+    <div class="guiLayer">
+        <div class="museum enterPan">
+            <div class="centerPcontainer">
+                <h2>展览馆</h2>
+                <p>museum</p>
+                <p class="discribe">陈列一些异术家的作品</p>
+                <div class="linkButton showOnCom">按<kbd>ENTER</kbd>进入</div>
+                <div class="linkButton showOnPho btn_jump" onclick="jumpPage('./../museum/index.html')">
+                    进入</div>
+            </div>
+        </div>
+        <div class="editor enterPan">
+            <div class="centerPcontainer">
+                <h2>工作室</h2>
+                <p>studio</p>
+                <p class="discribe">进行你的创作吧!</p>
+                <div class="linkButton showOnCom">按<kbd>ENTER</kbd>进入</div>
+                <div class="linkButton showOnPho" onclick="jumpPage('./../editor/editor_tdfunctionflat.html')">
+                    arthematics.js编辑器</div>
+            </div>
+        </div>
+        <div class="academic enterPan">
+            <div class="centerPcontainer">
+                <h2>学术</h2>
+                <p>academic</p>
+                <p>相关链接</p>
+                <p class="discribe">工欲善其事,必先利其器</p>
+                <div class="linkButton showOnCom">按<kbd>ENTER</kbd>进入</div>
+            </div>
+        </div>
+        <div class="displayroom enterPan">
+            <div class="centerPcontainer">
+                <h2>体验馆</h2>
+                <p>academic</p>
+                <p>相关链接</p>
+                <p class="discribe">工欲善其事,必先利其器</p>
+                <div class="linkButton showOnCom">按<kbd>ENTER</kbd>进入</div>
+            </div>
+        </div>
+    </div>
+    <div class="loadingLayer">
+        <div class="loadingCenter">
+            <h1>异术</h1>
+            <p>LOADING...</p>
+        </div>
+    </div>
+</body>
+
+</html>

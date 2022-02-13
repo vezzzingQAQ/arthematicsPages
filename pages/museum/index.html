@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异术!</title>
+    <link rel="stylesheet" type="text/css" href="./../../support/pack/csspack/style.css">
+    <link rel="stylesheet" type="text/css" href="./../../support/pack/arthematicsPack/Z_opt.css">
+    <script src="./../../support/pack/arthematicsPack/Z_opt.js"></script>
+    <script src="./../../support/libs/p5.min.js"></script>
+    <script src="./../../support/pack/publicVariable.js"></script>
+    <script src="./../../support/pack/hudObj.js"></script>
+    <script src="./../../support/pack/mathObj.js"></script>
+    <script src="./../../support/pack/roomObj.js"></script>
+    <script src="./../../support/pack/mbtAdp.js"></script>
+    <script src="./../../support/pack/vltd.js"></script>
+    <script src="./../../support/pack/vltd_func.js"></script>
+    <script src="./../adaptor/beadaptor.js"></script>
+    <script>
+
+        var objects = initStruc({ x: 0, z: 0, thetarw: -3.06, thetaeh: 0 }, { background: [0] });
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://121.40.159.180:4998/api/users/checkLogIn/" + getCookie("jwt").value + "/");
+        xhr.send();
+        console.log("http://121.40.159.180:4998/api/users/checkLogIn/" + getCookie("jwt").value + "/");
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    let data = JSON.parse(xhr.response)
+                    let result = data.ret;
+                    if (result == 0) {//成功
+                        getStore();
+                    } else {//没有登录，跳转到登录页面
+                        //添加cookie，记录当前URL
+                        let cdate = new Date();
+                        cdate.setDate(cdate.getMinutes() + 1);
+                        let expireDate = cdate.toGMTString();
+                        document.cookie = `purl=${window.location};expires=${expireDate};path=/`;
+                        //页面跳转
+                        jumpPage("./../logreg/login.html");
+                    }
+                } else {
+                    console.error(xhr.status);
+                }
+            }
+        }
+
+        function getStore() {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://121.40.159.180:4998/api/projects/showModel/5");
+            xhr.send();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        let result = JSON.parse(xhr.response);
+                        let funcContent = result.fucobj;
+                        console.log(funcContent);
+                        initPage(funcContent);
+                    } else {
+                        console.error(xhr.status);
+                    }
+                }
+            }
+        }
+
+        function initPage(funcContent) {
+            let sizeX = 2400;
+            let sizeZ = 2400;
+
+            initBasicFunctionGround(sizeX, 10, sizeZ, 10, 0, 0, (t, obj) => {
+                let zv = Math.sin(obj.paraList.x + t / 10);
+                obj.size.x = (zv + 1) * 10 + sizeX / 10 - 20;
+                obj.size.z = (zv + 1) * 10 + sizeZ / 10 - 20;
+            }, [220, 0, 220], 2, [0], 10, 10);
+
+            initBasicFunctionCelling(
+                sizeX, 10, sizeZ, 10,
+                0, 0,
+                1300,
+                (t, self) => {
+                    let x = self.paraList.x;
+                    let z = self.paraList.z;
+                    let y = sin(x * z - t / 100);
+                    self.position.y = y * 20 + self.paraList.height;
+                },
+                [0, 255, 9], 2, [0],
+                10, 10
+            );
+
+            initDisplayScreen(
+                11,
+                "displayscreen4",
+                { x: 500, z: 0, y: 300 },
+                false,
+                new TdFunctionFlat_obj(funcContent),
+                300, 300, 20, 300, 300, 0,
+                [200], 1, null,
+                0, null, null, true
+            );
+
+            initDisplayBox(
+                21,
+                "displayBox1",
+                { x: -200, z: -200, y: 50 },
+                new GlTdFunction(
+                    { author: "vezzzing", date: "2022.1.7" },
+                    -2, 2, 10,
+                    -2, 2, 10,
+                    `sin(x*y+T)`,
+                    `
+        strokeWeight(0.3);
+        stroke(0);
+        fill(map(x,-2,2,0,255),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(15);`
+                ),
+                { x: 100, z: 100, y: 100 },
+                { x: 100, z: 100, y: 150 },
+                [200], 1, null,
+                0, null, null, true
+            );
+            initCanvas();
+            fadeOutLoadingPan();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="hudLayer"></div>
+    <div class="mbtLayer">
+        <div class="mbt_left mbt_button">←</div>
+        <div class="mbt_right mbt_button">→</div>
+        <div class="mbt_top mbt_button">↑</div>
+        <div class="mbt_bottom mbt_button">↓</div>
+    </div>
+    <div class="guiLayer">
+        <div class="esc enterPan">
+            <div class="centerPcontainer">
+                <h2>退出到主页</h2>
+                <p>to index page</p>
+                <p>by vezzzing</p>
+                <p>(ﾉ*･ω･)ﾉ</p>
+                <div class="linkButton showOnCom">按<kbd>ENTER</kbd>tui</div>
+                <div class="linkButton showOnPho"
+                    onclick="jumpPage('http://121.40.159.180:4999/arthematics.js/arthematicsPack/editor/pureEditor.html')">
+                    arthematics.js编辑器</div>
+            </div>
+        </div>
+        <div class="esc enterPan">
+            <div class="centerPcontainer">
+                <h2>退出到主页</h2>
+                <p>by vezzzing</p>
+                <p>(ﾉ*･ω･)ﾉ</p>
+                <a class="jumpURL" href="./T2.html">
+                    <p style="color:aqua;"></p>
+                </a>
+            </div>
+        </div>
+        <div class="initCone enterPan">
+            <div class="centerPcontainer">
+                <h2>initCone()</h2>
+                <p>生成圆锥</p>
+                <p>by vezzzing</p>
+                <p>(ﾉ*･ω･)ﾉ</p>
+                <a class="jumpURL" href="./T3.html">
+                    <p style="color:aqua;"></p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="loadingLayer">
+        <div class="loadingCenter">
+            <h1>异术</h1>
+            <p>LOADING...</p>
+        </div>
+    </div>
+</body>
+
+</html>

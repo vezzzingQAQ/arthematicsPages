@@ -1,0 +1,176 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+body .innerPan {
+  color: white;
+  border: 1px solid #11ffff;
+  border-radius: 10px;
+  letter-spacing: 2px;
+  line-height: 30px;
+}
+body .innerPan input {
+  background-color: transparent;
+  color: white;
+  letter-spacing: 2px;
+  border: 1px solid white;
+  border-radius: 5px;
+  outline: none;
+  width: 50px;
+  padding: 3px;
+}
+body .innerPan textarea {
+  background-color: transparent;
+  color: white;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  resize: vertical;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+  min-height: 40px;
+}
+body .data p {
+  font-size: 14px;
+  line-height: 20px;
+}
+body .buttonPan div {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  cursor: pointer;
+}
+body .buttonPan div i {
+  color: white;
+  font-size: 23px;
+}
+@media screen and (min-width: 1000px) {
+  .buttonPan {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    display: flex;
+    flex-direction: row;
+  }
+  .buttonPan div {
+    border: 2px solid #11ffff;
+    border-radius: 50%;
+    margin-left: 30px;
+    position: relative;
+    transition: 0.5s ease-in-out;
+  }
+  .buttonPan div::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #cc00ff;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 0.5s ease-in-out;
+    z-index: -1;
+  }
+  .buttonPan div:hover {
+    border-color: #cc00ff;
+  }
+  .buttonPan div:hover::before {
+    transform: scale(1.05);
+  }
+  .leftPan {
+    position: absolute;
+    z-index: 999;
+    left: 30px;
+    top: 30px;
+    width: 350px;
+    height: calc(100vh - 60px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+  .leftPan::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+  }
+  .leftPan::-webkit-scrollbar-track {
+    background-color: transparent;
+    border: 2px solid #adadad;
+    border-radius: 10px;
+  }
+  .leftPan::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: transparent;
+    border: 1px solid #11ffff;
+  }
+  .leftPan .innerPan {
+    position: relative;
+    width: 300px;
+    height: min-content;
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+  .leftPan .share {
+    padding: 0;
+    border: 1px solid #cc00ff;
+    border-radius: 40px;
+    text-align: center;
+    height: 40px;
+    line-height: 35px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    margin-bottom: 1px;
+  }
+  .leftPan .share:hover {
+    background-color: #cc00ff;
+  }
+  canvas {
+    position: absolute;
+    top: calc(50vh - 250px);
+    left: calc(50vw - 250px + 200px);
+  }
+}
+@media screen and (max-width: 1000px) {
+  .leftPan {
+    position: absolute;
+    z-index: 999;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 50vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border-top: 2px solid #11ffff;
+    padding-top: 20px;
+  }
+  .leftPan .innerPan {
+    position: relative;
+    width: 80vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    height: min-content;
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+  .leftPan #equation {
+    height: 80px;
+  }
+  canvas {
+    position: absolute;
+    width: min(50vh, 100vw) !important;
+    height: min(50vh, 100vw) !important;
+    top: 0;
+    left: calc(50vw - min(50vh, 100vw) / 2);
+  }
+}

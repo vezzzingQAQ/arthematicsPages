@@ -1,0 +1,184 @@
+@import url(./../../z_public/colors.less);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    .innerPan {
+        color: white;
+        border: @default_blue_stroke;
+        border-radius: 10px;
+        letter-spacing: 2px;
+        line-height: 30px;
+        input {
+            background-color: transparent;
+            color: white;
+            letter-spacing: 2px;
+            border: 1px solid white;
+            border-radius: 5px;
+            outline: none;
+            width: 50px;
+            padding: 3px;
+        }
+        textarea {
+            background-color: transparent;
+            color: white;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            resize: vertical;
+            border: 1px solid @default_white;
+            border-radius: 5px;
+            padding: 5px;
+            outline: none;
+            font-family: "Courier New", Courier, monospace;
+            min-height: 40px;
+        }
+    }
+    .data {
+        p {
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+    .buttonPan{
+        div{
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            cursor: pointer;
+            i{
+                color: white;
+                font-size: 23px;
+            }
+        }
+    }
+}
+@media screen and (min-width: 1000px) {
+    //电脑端
+    .buttonPan{
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        display: flex;
+        flex-direction: row;
+        div{
+            border: 2px solid @light_blue;
+            border-radius: 50%;
+            margin-left: 30px;
+            position: relative;
+            transition: 0.5s ease-in-out;
+            &::before{
+                content: '';
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: @default_pink;
+                border-radius: 50%;
+                transform: scale(0);
+                transition: 0.5s ease-in-out;
+                z-index: -1;
+            }
+            &:hover{
+                border-color: @default_pink;
+                &::before{
+                    transform: scale(1.05);
+                }
+            }
+        }
+    }
+    .leftPan {
+        position: absolute;
+        z-index: 999;
+        left: 30px;
+        top: 30px;
+        width: 350px;
+        height: calc(100vh - 60px);
+        overflow-x: hidden;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: transparent;
+            border: 2px solid rgb(173, 173, 173);
+            border-radius: 10px;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: transparent;
+            border: @default_blue_stroke;
+        }
+        .innerPan {
+            position: relative;
+            width: 300px;
+            height: min-content;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .share {
+            padding: 0;
+            border: @default_pink_stroke;
+            border-radius: 40px;
+            text-align: center;
+            height: 40px;
+            line-height: 35px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            margin-bottom: 1px;
+        }
+        .share:hover{
+            background-color: @default_pink;
+        }
+    }
+    canvas {
+        position: absolute;
+        top: calc(50vh - 250px);
+        left: calc(50vw - 250px + 200px);
+    }
+}
+@media screen and (max-width: 1000px) {
+    //移动端
+    .leftPan {
+        position: absolute;
+        z-index: 999;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 50vh;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        border-top: 2px solid @light_blue;
+        padding-top: 20px;
+        .innerPan {
+            position: relative;
+            width: 80vw;
+            margin-left: 10vw;
+            margin-right: 10vw;
+            height: min-content;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        #equation {
+            height: 80px;
+        }
+    }
+    canvas {
+        position: absolute;
+        width: min(50vh, 100vw) !important;
+        height: min(50vh, 100vw) !important;
+        top: 0;
+        left: calc(50vw - min(50vh, 100vw) / 2);
+    }
+}

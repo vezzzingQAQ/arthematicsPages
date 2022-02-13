@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二元函数编辑器</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="./support/main.css">
+    <script src="./../../support/libs/p5.min.js"></script>
+    <script src="./../../support/pack/mathObj.js"></script>
+    <script>
+        
+    </script>
+    <script>
+        var vpwidth;
+        var vpheight;
+        function setup() {
+            createCanvas(500, 500);
+            background(0);
+            document.querySelector(".capture").onclick=function(){
+                save("arthematics!"+(Math.random())+str(frameCount)+".png");
+            }
+        }
+        function windowResized() {
+            resizeCanvas(500, 500);
+        }
+        function draw() {
+            vpwidth = width;
+            vpheight = height;
+            let T = frameCount / 10;
+            try {
+                let fx = parseFloat(document.querySelector("#fx").value);
+                let tx = parseFloat(document.querySelector("#tx").value);
+                let dx = parseFloat(document.querySelector("#dx").value);
+                let fy = parseFloat(document.querySelector("#fy").value);
+                let ty = parseFloat(document.querySelector("#ty").value);
+                let dy = parseFloat(document.querySelector("#dy").value);
+                let sx = (tx - fx) / dx;
+                let sy = (ty - fy) / dy;
+                let func = document.querySelector("#equation").value;
+                let disp = document.querySelector("#changef").value;
+                let tempFunc = new TdFunctionFlat(
+                    { author: "vezzzing" },
+                    fx, tx, sx,
+                    fy, ty, sy,
+                    func, disp
+                );
+                eval(tempFunc.toDisplayStr());
+                document.querySelector(".data p").innerHTML =
+                    `
+                x∈[${fx},${tx}],dx=${dx}\n
+                y∈[${fy},${ty}],dy=${dx}\n
+                f(x,y)=${func}\n
+                amount=${int(sx*sy)}
+                `;
+            } catch (e) {
+                background(0);
+                fill(255);
+                noStroke();
+                text(e, width / 2, height / 2);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="buttonPan">
+        <div class="share">
+            <i class="fa fa-paper-plane"></i>
+        </div>
+        <div class="capture">
+            <i class="fa fa-camera"></i>
+        </div>
+    </div>
+    <div class="leftPan">
+        <div class="innerPan para">
+            <p>
+                x∈[ <input type="text" value="-3" id="fx"> ,
+                <input type="text" value="3" id="tx"> ]
+            </p>
+            <p>
+                Δx=<input type="text" value="0.2" id="dx">
+            </p>
+            <p>
+                y∈[ <input type="text" value="-3" id="fy"> ,
+                <input type="text" value="3" id="ty"> ]
+            </p>
+            <p>
+                Δy=<input type="text" value="0.2" id="dy">
+            </p>
+        </div>
+        <div class="innerPan eqa">
+            <textarea id="equation" spellcheck="false">
+sin(x*y+T/2);
+            </textarea>
+        </div>
+        <div class="innerPan dsp">
+            <textarea id="changef" spellcheck="false">
+rectMode(CENTER);
+noStroke();
+fill(map(x,-5,5,0,255),map(z,-1,1,255,0),map(z,-1,1,0,255));
+rect(px,py,map(z,-1,1,0,55),map(z,-1,1,55,0));
+            </textarea>
+        </div>
+        <div class="innerPan data">
+            <p></p>
+        </div>
+        <div class="innerPan share">分享</div>
+    </div>
+    <div class="displayPan">
+
+    </div>
+</body>
+
+</html>
