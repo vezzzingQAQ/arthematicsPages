@@ -1,0 +1,171 @@
+//函数声明区
+.fullScreen() {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.basicTextType() {
+    font-size: 15px;
+    color: white;
+    letter-spacing: 2px;
+}
+.LargeTextType() {
+    font-size: 20px;
+    color: white;
+    letter-spacing: 2px;
+}
+.basicTransition() {
+    transition: 0.3s ease-in-out;
+}
+.largeBorderRadius() {
+    border-radius: 30px;
+}
+.glassBorder() {
+    //毛玻璃边框
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid rgba(200, 200, 200, 0.267);
+    border-right: 1px solid rgba(200, 200, 200, 0.377);
+}
+.basicBorder() {
+    //基本边框
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+//动画样式区
+@keyframes moveAfadeIn_c {
+    0% {
+        top: -100vh;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(0, 255, 255);
+        backdrop-filter: blur(0);
+        border-radius: 0;
+    }
+    50% {
+        top: -10vh;
+        left: 0;
+        width: 100vw;
+        height: 110vh;
+        background-color: transparent;
+        backdrop-filter: blur(0);
+        border-radius: 0;
+    }
+    100% {
+        top: 10vh;
+        left: 10vw;
+        height: 80vh;
+        width: 80vw;
+        backdrop-filter: blur(18px);
+        background-color: rgba(0, 0, 0, 0.3);
+        .basicBorder();
+    }
+}
+@keyframes moveAfadeOut_c {
+    0% {
+        backdrop-filter: blur(14px);
+        opacity: 1;
+    }
+    100% {
+        backdrop-filter: blur(0);
+        opacity: 0;
+    }
+}
+//界面修改区
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: black;
+    main {
+        .fullScreen();
+        z-index: 1;
+    }
+    .hudLayer {
+        .fullScreen();
+        z-index: 2;
+        background-color: transparent;
+        .centerHUDp {
+            .basicTransition();
+            padding: 20px;
+            position: fixed;
+            z-index: 3;
+            overflow: hidden;
+            animation-name: moveAfadeIn_c;
+            animation-iteration-count: 1;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+            .author {
+                .LargeTextType();
+            }
+            .date {
+                .basicTextType();
+            }
+            .code {
+                color: rgba(255, 255, 255, 0.788);
+            }
+        }
+    }
+    .guiLayer {
+        .fullScreen();
+        z-index: 30;
+        background-color: transparent;
+    }
+    .mbtLayer {
+        z-index: 999;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        height: 220px;
+        background-color: transparent;
+        .mbt_button {
+            position: fixed;
+            background-color: rgba(250, 250, 250, 0.1);
+            display: block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: white;
+            cursor: default;
+            transition: 0.1s ease-in-out;
+            &:hover {
+                background-color: rgba(250, 250, 250, 0.295);
+            }
+        }
+        .mbt_left {
+            left: 20px;
+            bottom: 80px;
+        }
+        .mbt_right {
+            left: 140px;
+            bottom: 80px;
+        }
+        .mbt_bottom {
+            left: 80px;
+            bottom: 20px;
+        }
+        .mbt_top {
+            left: 80px;
+            bottom: 140px;
+        }
+        .exit_button{
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: white;
+            background-color: rgba(250,250,250,0.3);
+            border-radius: 50%;
+            left: 20px;
+            top: 20px;
+            z-index: 99999;
+        }
+    }
+}
